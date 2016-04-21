@@ -12,7 +12,6 @@ use tendril::StrTendril;
 use std::sync::mpsc::{sync_channel, SyncSender, IntoIter};
 use std::iter::Peekable;
 
-
 lazy_static! {
     static ref CLASS: QualName = QualName { ns: Namespace(atom!("")), local: atom!("class") };
 }
@@ -36,7 +35,6 @@ fn start_processing(input: &'static [u8]) -> IntoIter<Token> {
     rx.into_iter()
 }
 
-
 fn consume<I: Iterator<Item=Token>>(iter: I) {
     fn has_class(token: &Token, class: &StrTendril) -> bool {
         if let &Token::TagToken(Tag {kind: StartTag, ref attrs, ..}) = token {
@@ -45,6 +43,7 @@ fn consume<I: Iterator<Item=Token>>(iter: I) {
             false
         }
     }
+
     fn extract_content<I: Iterator<Item=Token>>(mut iter: &mut Peekable<I>) -> Option<StrTendril> {
         fn is_character_tokens(t: Token) -> Option<StrTendril> {
             if let Token::CharacterTokens(s) = t {
@@ -66,6 +65,7 @@ fn consume<I: Iterator<Item=Token>>(iter: I) {
         }
         Some(first)
     }
+
     fn extract_user<I: Iterator<Item=Token>>(mut iter: &mut Peekable<I>) -> Option<StrTendril> {
         // Move the iterator until we are past a user
         let user_tendril = "user".into();
@@ -108,8 +108,7 @@ fn consume<I: Iterator<Item=Token>>(iter: I) {
             (Some(name), Some(date), Some(comment)) => {
                 println!("{} on {}: {}", name, date, comment);
             }
-            (a, b, c) => {
-                println!("{:?} {:?} {:?}", a, b, c);
+            _ => {
                 break;
             },
         }
@@ -120,9 +119,9 @@ fn main() {
     let memmap = memmap::Mmap::open_path("./messages.htm", memmap::Protection::Read).unwrap();
     let token_iter = start_processing(
     br#"
-        <span class="user"> Kelly </span>
+        <span class="user"> Ty </span>
         <span class="meta"> Today </span>
-        <p>I forgot that I don&#039;t know how to flirt like at all</p>
+        <p>I forgot that I don&#039;t know how things work</p>
     "#);
     let token_iter = start_processing(unsafe {::std::mem::transmute(memmap.as_slice())});
     consume(token_iter);
