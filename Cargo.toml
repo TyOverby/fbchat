@@ -1,0 +1,15 @@
+[package]
+name = "fbchat"
+version = "0.1.0"
+authors = ["Ty Overby <ty@pre-alpha.com>"]
+
+[[bin]]
+name = "main"
+path = "./src/main.rs"
+
+[dependencies]
+html5ever = "0.5.4"
+string_cache = "0.2.13"
+lazy_static = "0.2.0"
+tendril = "0.2.2"
+memmap = "0.3.0"
